@@ -1,6 +1,6 @@
 const dragonModel = require("../model/dragon")
 const dragonReqs = require("../request/dragon")
-const { GraphQLObjectType, GraphQLList } = require("graphql")
+const { GraphQLObjectType, GraphQLList, GraphQLString, GraphQLNonNull } = require("graphql")
 
 const dragon = new GraphQLObjectType({
     name: "DragonQuery",
@@ -9,6 +9,15 @@ const dragon = new GraphQLObjectType({
         dragons: {
             type: new GraphQLList(dragonModel),
             resolve: async () => await dragonReqs.getAll()
+        },
+        dragon: {
+            type: dragonModel,
+            args: {
+                id: {
+                    type: GraphQLNonNull(GraphQLString)
+                }
+            },
+            resolve: async(_, args) => await dragonReqs.getOne(args.id)
         }
     }
 })
